@@ -56,7 +56,7 @@ const Home: NextPage = () => {
         </div>
       ))}
 
-      <button className='fixed hover:bg-orange-500 cursor-pointer bottom-24 right-5 shadow-xl bg-orange-400 rounded-full p-4 text-white'>
+      <button className='fixed hover:bg-orange-500 cursor-pointer transition-colors bottom-24 right-5 shadow-xl bg-orange-400 rounded-full p-4 text-white'>
         <svg
           className="h-6 w-6"
           xmlns="http://www.w3.org/2000/svg"
