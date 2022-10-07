@@ -14,12 +14,12 @@ export default async function handler(
   //     name: "hi"
   //   }
   // });
-  await client.user.count();
+  const test = await client.user.count();
 
 
   res.json({
     ok: true,
-    count: 
+    count: test
   })
 
 
