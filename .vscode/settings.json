@@ -1,9 +1,7 @@
 {
-  "cSpell.words": [
-    "corejs"
-  ],
-  
-  "[prisma]":{
+  "cSpell.words": ["corejs", "upsert"],
+
+  "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma",
     "editor.formatOnSave": true
   }
