@@ -1,12 +1,9 @@
-import client from "@libs/server/client";
-import withHandler from "@libs/server/withHandler";
-import { create } from "domain";
+import twilio from "twilio";
 import { NextApiRequest, NextApiResponse } from "next";
+import withHandler, { ResponseType } from "@libs/server/withHandler";
+import client from "@libs/server/client";
 
-interface ResponseType {
-  ok: boolean;
-  [key: string]: any;
-}
+const twilioClient = twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
 
 async function handler(
   req: NextApiRequest,
@@ -16,6 +13,7 @@ async function handler(
   const user = phone ? { phone: +phone } : email ? { email } : null;
   const payload = Math.floor(100000 + Math.random() * 900000) + "";
   if (!user) return res.status(400).json({ ok: false });
+
   const token = await client.token.create({
     data: {
       payload: payload,
@@ -32,7 +30,17 @@ async function handler(
       },
     },
   });
+  console.log("성공");
   console.log(token);
+
+  // if (phone) {
+  //   const message = await twilioClient.messages.create({
+  //     messagingServiceSid: process.env.TWILIO_MSID,
+  //     to: process.env.MY_PHONE!,
+  //     body: `헬로우~~ ${payload}`,
+  //   });
+  //   console.log(message);
+  // }
 
   return res.json({
     ok: true,
