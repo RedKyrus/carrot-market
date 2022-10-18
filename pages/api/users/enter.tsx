@@ -3,22 +3,19 @@ import withHandler from "@libs/server/withHandler";
 import { create } from "domain";
 import { NextApiRequest, NextApiResponse } from "next";
 
-async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { phone, email } = req.body;
-  const user = phone ? { phone: +phone } : { email };
-  const payload = Math.floor(100000 + Math.random() * 900000) + "";
-  // const user = await client.user.upsert({
-  //   where: {
-  //     ...payload,
-  //   },
-  //   create: {
-  //     name: "anonymous",
-  //     ...payload,
-  //   },
-  //   update: {},
-  // });
-  // console.log(user);
+interface ResponseType {
+  ok: boolean;
+  [key: string]: any;
+}
 
+async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<ResponseType>
+) {
+  const { phone, email } = req.body;
+  const user = phone ? { phone: +phone } : email ? { email } : null;
+  const payload = Math.floor(100000 + Math.random() * 900000) + "";
+  if (!user) return res.status(400).json({ ok: false });
   const token = await client.token.create({
     data: {
       payload: payload,
@@ -37,7 +34,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   });
   console.log(token);
 
-  res.status(200).end();
+  return res.json({
+    ok: true,
+  });
 }
 
 export default withHandler("POST", handler);
