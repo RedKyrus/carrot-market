@@ -33,14 +33,14 @@ async function handler(
   console.log("성공");
   console.log(token);
 
-  // if (phone) {
-  //   const message = await twilioClient.messages.create({
-  //     messagingServiceSid: process.env.TWILIO_MSID,
-  //     to: process.env.MY_PHONE!,
-  //     body: `헬로우~~ ${payload}`,
-  //   });
-  //   console.log(message);
-  // }
+  if (phone) {
+    const message = await twilioClient.messages.create({
+      messagingServiceSid: process.env.TWILIO_MSID,
+      to: process.env.MY_PHONE!,
+      body: `헬로우~~ ${payload}`,
+    });
+    console.log(message);
+  }
 
   return res.json({
     ok: true,
