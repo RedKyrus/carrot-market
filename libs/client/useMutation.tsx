@@ -1,15 +1,17 @@
 import { useState } from "react";
 
-interface UseMutationStat {
+interface UseMutationStat<T> {
   loading: boolean;
-  data?: object;
+  data?: T;
   error?: object;
 }
 
-type UseMutationResult = [(data: any) => void, UseMutationStat];
+type UseMutationResult<T> = [(data: any) => void, UseMutationStat<T>];
 
-export default function useMutation(url: string): UseMutationResult {
-  const [state, setState] = useState<UseMutationStat>({
+export default function useMutation<T = any>(
+  url: string
+): UseMutationResult<T> {
+  const [state, setState] = useState<UseMutationStat<T>>({
     loading: false,
     data: undefined,
     error: undefined,

@@ -2,6 +2,7 @@ import twilio from "twilio";
 import { NextApiRequest, NextApiResponse } from "next";
 import withHandler, { ResponseType } from "@libs/server/withHandler";
 import client from "@libs/server/client";
+import smtpTransport from "@libs/server/email";
 
 const twilioClient = twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
 
@@ -34,12 +35,37 @@ async function handler(
   console.log(token);
 
   if (phone) {
-    const message = await twilioClient.messages.create({
-      messagingServiceSid: process.env.TWILIO_MSID,
-      to: process.env.MY_PHONE!,
-      body: `헬로우~~ ${payload}`,
-    });
-    console.log(message);
+    // const message = await twilioClient.messages.create({
+    //   messagingServiceSid: process.env.TWILIO_MSID,
+    //   to: process.env.MY_PHONE!,
+    //   body: `헬로우~~ ${payload}`,
+    // });
+    // console.log(message);
+  }
+
+  if (email) {
+    // const mailOptions = {
+    //   from: process.env.MAIL_ID,
+    //   to: email,
+    //   subject: "테스트 토큰",
+    //   text: `
+    //     안녕하세요!!!
+    //     인증번호 ${payload}
+    //     `,
+    // };
+    // const emailResult = await smtpTransport.sendMail(
+    //   mailOptions,
+    //   (error, responses) => {
+    //     if (error) {
+    //       console.log(error);
+    //       return null;
+    //     } else {
+    //       console.log(responses);
+    //       return null;
+    //     }
+    //   }
+    // );
+    // smtpTransport.close();
   }
 
   return res.json({

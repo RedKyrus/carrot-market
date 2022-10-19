@@ -11,8 +11,13 @@ interface EnterForm {
   phone?: string;
 }
 
+interface EnterMutationResult {
+  ok: boolean;
+}
+
 const Enter: NextPage = () => {
-  const [enter, { loading, data, error }] = useMutation("/api/users/enter");
+  const [enter, { loading, data, error }] =
+    useMutation<EnterMutationResult>("/api/users/enter");
   const { register, handleSubmit, reset } = useForm<EnterForm>();
   const [method, setMethod] = useState<"email" | "phone">("email");
 
@@ -27,6 +32,7 @@ const Enter: NextPage = () => {
   const onValid = (validForm: EnterForm) => {
     enter(validForm);
   };
+  console.log(data);
   // console.log(loading, data, error);
   return (
     <div className="mt-16 px-4">
@@ -59,33 +65,38 @@ const Enter: NextPage = () => {
             </button>
           </div>
         </div>
-        <form
-          onSubmit={handleSubmit(onValid)}
-          className="flex flex-col mt-8 space-y-4"
-        >
-          {method === "email" ? (
-            <Input
-              register={register("email")}
-              name="email"
-              label="Email address"
-              type="email"
-              required
-            />
-          ) : null}
-          {method === "phone" ? (
-            <Input
-              register={register("phone")}
-              name="phone"
-              label="phone number"
-              kind="phone"
-              type="number"
-              required
-            />
-          ) : null}
 
-          {method === "email" ? <Button text="Get login link" /> : null}
-          {method === "phone" ? <Button text="Get one-time password" /> : null}
-        </form>
+        {data?.ok ? null : (
+          <form
+            onSubmit={handleSubmit(onValid)}
+            className="flex flex-col mt-8 space-y-4"
+          >
+            {method === "email" ? (
+              <Input
+                register={register("email")}
+                name="email"
+                label="Email address"
+                type="email"
+                required
+              />
+            ) : null}
+            {method === "phone" ? (
+              <Input
+                register={register("phone")}
+                name="phone"
+                label="phone number"
+                kind="phone"
+                type="number"
+                required
+              />
+            ) : null}
+
+            {method === "email" ? <Button text="Get login link" /> : null}
+            {method === "phone" ? (
+              <Button text="Get one-time password" />
+            ) : null}
+          </form>
+        )}
 
         <div className="mt-8">
           <div className="relative">
