@@ -31,8 +31,8 @@ async function handler(
       },
     },
   });
-  console.log("성공");
-  console.log(token);
+  // console.log("성공");
+  // console.log(token);
 
   if (phone) {
     // const message = await twilioClient.messages.create({

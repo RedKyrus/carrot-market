@@ -32,41 +32,13 @@ const Enter: NextPage = () => {
   const onValid = (validForm: EnterForm) => {
     enter(validForm);
   };
-  console.log(data);
+  // console.log(data);
   // console.log(loading, data, error);
   return (
     <div className="mt-16 px-4">
       <h3 className="text-3xl font-bold text-center">Enter to Carrot</h3>
-      <div className="mt-8">
-        <div className="flex flex-col items-center">
-          <h5 className="text-sm text-gray-500 font-medium">Enter using:</h5>
-          <div className="grid border-b w-full mt-8 grid-cols-2 gap-16">
-            <button
-              className={cls(
-                "pb-4 font-medium border-b-2",
-                method === "email"
-                  ? "border-orange-500 text-orange-400"
-                  : "border-transparent text-gray-500"
-              )}
-              onClick={onEmailClick}
-            >
-              Email
-            </button>
-            <button
-              className={cls(
-                "pb-4 font-medium border-b-2",
-                method === "phone"
-                  ? "border-orange-500 text-orange-400"
-                  : "border-transparent text-gray-500"
-              )}
-              onClick={onPhoneClick}
-            >
-              Phone
-            </button>
-          </div>
-        </div>
-
-        {data?.ok ? null : (
+      <div className="mt-12">
+        {data?.ok ? (
           <form
             onSubmit={handleSubmit(onValid)}
             className="flex flex-col mt-8 space-y-4"
@@ -96,6 +68,67 @@ const Enter: NextPage = () => {
               <Button text="Get one-time password" />
             ) : null}
           </form>
+        ) : (
+          <>
+            <div className="flex flex-col items-center">
+              <h5 className="text-sm text-gray-500 font-medium">
+                Enter using:
+              </h5>
+              <div className="grid border-b w-full mt-8 grid-cols-2 gap-16">
+                <button
+                  className={cls(
+                    "pb-4 font-medium border-b-2",
+                    method === "email"
+                      ? "border-orange-500 text-orange-400"
+                      : "border-transparent text-gray-500"
+                  )}
+                  onClick={onEmailClick}
+                >
+                  Email
+                </button>
+                <button
+                  className={cls(
+                    "pb-4 font-medium border-b-2",
+                    method === "phone"
+                      ? "border-orange-500 text-orange-400"
+                      : "border-transparent text-gray-500"
+                  )}
+                  onClick={onPhoneClick}
+                >
+                  Phone
+                </button>
+              </div>
+            </div>
+            <form
+              onSubmit={handleSubmit(onValid)}
+              className="flex flex-col mt-8 space-y-4"
+            >
+              {method === "email" ? (
+                <Input
+                  register={register("email")}
+                  name="email"
+                  label="Email address"
+                  type="email"
+                  required
+                />
+              ) : null}
+              {method === "phone" ? (
+                <Input
+                  register={register("phone")}
+                  name="phone"
+                  label="phone number"
+                  kind="phone"
+                  type="number"
+                  required
+                />
+              ) : null}
+
+              {method === "email" ? <Button text="Get login link" /> : null}
+              {method === "phone" ? (
+                <Button text="Get one-time password" />
+              ) : null}
+            </form>
+          </>
         )}
 
         <div className="mt-8">
