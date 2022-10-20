@@ -1,5 +1,5 @@
 {
-  "cSpell.words": ["corejs", "upsert"],
+  "cSpell.words": ["carrotsession", "corejs", "pscale", "upsert"],
 
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma",

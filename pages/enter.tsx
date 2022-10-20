@@ -11,6 +11,10 @@ interface EnterForm {
   phone?: string;
 }
 
+interface TokenForm {
+  token: string;
+}
+
 interface EnterMutationResult {
   ok: boolean;
 }
@@ -18,7 +22,11 @@ interface EnterMutationResult {
 const Enter: NextPage = () => {
   const [enter, { loading, data, error }] =
     useMutation<EnterMutationResult>("/api/users/enter");
+  const [confirmToken, { loading: tokenLoading, data: tokenData }] =
+    useMutation<EnterMutationResult>("/api/users/confirm");
   const { register, handleSubmit, reset } = useForm<EnterForm>();
+  const { register: tokenRegister, handleSubmit: tokenHandleSubmit } =
+    useForm<TokenForm>();
   const [method, setMethod] = useState<"email" | "phone">("email");
 
   const onEmailClick = () => {
@@ -30,8 +38,14 @@ const Enter: NextPage = () => {
     setMethod("phone");
   };
   const onValid = (validForm: EnterForm) => {
+    if (loading) return;
     enter(validForm);
   };
+  const onTokenValid = (validForm: TokenForm) => {
+    if (tokenLoading) return;
+    confirmToken(validForm);
+  };
+
   // console.log(data);
   // console.log(loading, data, error);
   return (
@@ -40,33 +54,18 @@ const Enter: NextPage = () => {
       <div className="mt-12">
         {data?.ok ? (
           <form
-            onSubmit={handleSubmit(onValid)}
+            onSubmit={tokenHandleSubmit(onTokenValid)}
             className="flex flex-col mt-8 space-y-4"
           >
-            {method === "email" ? (
-              <Input
-                register={register("email")}
-                name="email"
-                label="Email address"
-                type="email"
-                required
-              />
-            ) : null}
-            {method === "phone" ? (
-              <Input
-                register={register("phone")}
-                name="phone"
-                label="phone number"
-                kind="phone"
-                type="number"
-                required
-              />
-            ) : null}
+            <Input
+              register={tokenRegister("token")}
+              name="token"
+              label="Confirmation Token"
+              type="number"
+              required
+            />
 
-            {method === "email" ? <Button text="Get login link" /> : null}
-            {method === "phone" ? (
-              <Button text="Get one-time password" />
-            ) : null}
+            <Button text={loading ? "Loading" : "Confirm Token"} />
           </form>
         ) : (
           <>
@@ -123,9 +122,11 @@ const Enter: NextPage = () => {
                 />
               ) : null}
 
-              {method === "email" ? <Button text="Get login link" /> : null}
+              {method === "email" ? (
+                <Button text={loading ? "Loading" : "Get Login link"} />
+              ) : null}
               {method === "phone" ? (
-                <Button text="Get one-time password" />
+                <Button text={loading ? "Loading" : "Get one-time password"} />
               ) : null}
             </form>
           </>
