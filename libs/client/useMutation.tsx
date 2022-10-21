@@ -16,13 +16,12 @@ export default function useMutation<T = any>(
     data: undefined,
     error: undefined,
   });
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   // const [data, setData] = useState<undefined | any>(undefined);
   // const [error, setError] = useState<undefined | any>(undefined);
 
   function mutation(data: any) {
     setState((prev) => ({ ...prev, loading: true }));
-
     fetch(url, {
       method: "POST",
       headers: {

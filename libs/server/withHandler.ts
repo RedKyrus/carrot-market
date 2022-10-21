@@ -12,7 +12,7 @@ export default function withHandler(
   return async function (
     req: NextApiRequest,
     res: NextApiResponse
-  ): Promise<void> {
+  ): Promise<any> {
     // res.json({ hello: true });
     if (req.method !== method) {
       res.status(405).end();
