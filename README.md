@@ -3,3 +3,5 @@
 ## https://planetscale.com/
 
 ## https://www.twilio.com/
+
+## https://www.passwordsgenerators.net/
