@@ -88,7 +88,7 @@ export default function Layout({
               <span>동네생활</span>
             </a>
           </Link>
-          <Link href="/charts">
+          <Link href="/chats">
             <a className="flex flex-col items-center spay-y-2">
               <svg
                 className="w-6 h-6"
