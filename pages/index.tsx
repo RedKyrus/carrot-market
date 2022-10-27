@@ -1,4 +1,5 @@
 import useUser from "@libs/client/useUser";
+import { Product } from "@prisma/client";
 import type { NextPage } from "next";
 import Head from "next/head";
 import useSWR from "swr";
@@ -7,22 +8,26 @@ import Item from "../components/item";
 import Layout from "../components/layout";
 // import "../libs/client";
 
+interface ProductsResponse {
+  ok: boolean;
+  products: Product[];
+}
+
 const Home: NextPage = () => {
   const { user, isLoading } = useUser();
-  // const { data } = useSWR("/api/products");
-  // console.log(data);
+  const { data } = useSWR<ProductsResponse>("/api/products");
   return (
     <Layout title="홈" hasTabBar>
       <Head>
         <title>HOME</title>
       </Head>
       <div className="flex flex-col space-y-5">
-        {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((_, i) => (
+        {data?.products?.map((product) => (
           <Item
-            id={i}
-            key={i}
-            title="iPone 14"
-            price={99}
+            id={product.id}
+            key={product.id}
+            title={product.name}
+            price={product.price}
             comments={1}
             hearts={1}
           />
