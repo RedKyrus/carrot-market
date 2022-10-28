@@ -8,9 +8,15 @@ import Item from "../components/item";
 import Layout from "../components/layout";
 // import "../libs/client";
 
+interface ProductWithCount extends Product {
+  _count: {
+    favs: number;
+  };
+}
+
 interface ProductsResponse {
   ok: boolean;
-  products: Product[];
+  products: ProductWithCount[];
 }
 
 const Home: NextPage = () => {
@@ -28,8 +34,8 @@ const Home: NextPage = () => {
             key={product.id}
             title={product.name}
             price={product.price}
+            hearts={product._count.favs}
             comments={1}
-            hearts={1}
           />
         ))}
         <FloatingButton href="/products/upload">
