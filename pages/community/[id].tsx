@@ -1,7 +1,29 @@
+import { Post, User } from "@prisma/client";
 import type { NextPage } from "next";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import useSWR from "swr";
 import Layout from "../../components/layout";
 
+interface PostWithUser extends Post {
+  user: User;
+  _count: {
+    answers: number;
+    wondering: number;
+  };
+}
+
+interface CommunityPostResponse {
+  ok: boolean;
+  post: PostWithUser;
+}
+
 const CommunityPostDetail: NextPage = () => {
+  const router = useRouter();
+  const { data, error } = useSWR<CommunityPostResponse>(
+    router.query.id ? `/api/posts/${router.query.id}` : null
+  );
+  console.log(data);
   return (
     <Layout canGoBack>
       <div>
@@ -11,10 +33,14 @@ const CommunityPostDetail: NextPage = () => {
         <div className="flex mb-3 px-4 cursor-pointer pb-3  border-b items-center space-x-3">
           <div className="w-10 h-10 rounded-full bg-slate-300" />
           <div>
-            <p className="text-sm font-medium text-gray-700">Steve Jebs</p>
-            <p className="text-xs font-medium text-gray-500">
-              View profile &rarr;
+            <p className="text-sm font-medium text-gray-700">
+              {data?.post.user.name}
             </p>
+            <Link href={`/users/profile/${data?.post?.user?.id}`}>
+              <p className="text-xs font-medium text-gray-500">
+                View profile &rarr;
+              </p>
+            </Link>
           </div>
         </div>
         <div>
@@ -38,7 +64,7 @@ const CommunityPostDetail: NextPage = () => {
                   d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                 ></path>
               </svg>
-              <span>궁금해요 1</span>
+              <span>궁금해요 {data?.post._count.answers}</span>
             </span>
             <span className="flex space-x-2 items-center text-sm">
               <svg
@@ -55,7 +81,7 @@ const CommunityPostDetail: NextPage = () => {
                   d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                 ></path>
               </svg>
-              <span>답변 1</span>
+              <span>답변 {data?.post._count.wondering}</span>
             </span>
           </div>
         </div>
