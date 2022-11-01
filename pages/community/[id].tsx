@@ -1,9 +1,14 @@
-import { Post, User } from "@prisma/client";
+import useMutation from "@libs/client/useMutation";
+import { Answer, Post, User } from "@prisma/client";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import Layout from "../../components/layout";
+
+interface AnswerWithUser extends Answer {
+  user: User;
+}
 
 interface PostWithUser extends Post {
   user: User;
@@ -11,6 +16,7 @@ interface PostWithUser extends Post {
     answers: number;
     wondering: number;
   };
+  answers: AnswerWithUser[];
 }
 
 interface CommunityPostResponse {
@@ -20,10 +26,25 @@ interface CommunityPostResponse {
 
 const CommunityPostDetail: NextPage = () => {
   const router = useRouter();
-  const { data, error } = useSWR<CommunityPostResponse>(
+  const { data, mutate } = useSWR<CommunityPostResponse>(
     router.query.id ? `/api/posts/${router.query.id}` : null
   );
-  console.log(data);
+  const [wonder] = useMutation(`/posts/${router.query.id}/wonder`);
+  const onWonderClick = () => {
+    if (!data) return;
+    mutate({
+      ...data,
+      post: {
+        ...data.post,
+        _count: {
+          ...data.post._count,
+          wondering: data?.post._count.wondering + 1,
+        },
+      },
+    });
+    // wonder({});
+  };
+
   return (
     <Layout canGoBack>
       <div>
@@ -45,11 +66,14 @@ const CommunityPostDetail: NextPage = () => {
         </div>
         <div>
           <div className="mt-2 px-4 text-gray-700">
-            <span className="text-orange-500 font-medium">Q.</span> What is the
-            best mandu restaurant?
+            <span className="text-orange-500 font-medium">Q.</span>{" "}
+            {data?.post.question}
           </div>
           <div className="flex px-4 space-x-5 mt-3 text-gray-700 py-2.5 border-t border-b-[2px]  w-full">
-            <span className="flex space-x-2 items-center text-sm">
+            <button
+              onClick={onWonderClick}
+              className="flex space-x-2 items-center text-sm"
+            >
               <svg
                 className="w-4 h-4"
                 fill="none"
@@ -65,7 +89,7 @@ const CommunityPostDetail: NextPage = () => {
                 ></path>
               </svg>
               <span>궁금해요 {data?.post._count.answers}</span>
-            </span>
+            </button>
             <span className="flex space-x-2 items-center text-sm">
               <svg
                 className="w-4 h-4"
@@ -86,18 +110,20 @@ const CommunityPostDetail: NextPage = () => {
           </div>
         </div>
         <div className="px-4 my-5 space-y-5">
-          <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-slate-200 rounded-full" />
-            <div>
-              <span className="text-sm block font-medium text-gray-700">
-                Steve Jebs
-              </span>
-              <span className="text-xs text-gray-500 block ">2시간 전</span>
-              <p className="text-gray-700 mt-2">
-                The best mandu restaurant is the one next to my house.
-              </p>
+          {data?.post.answers.map((answer) => (
+            <div key={answer.id} className="flex items-start space-x-3">
+              <div className="w-8 h-8 bg-slate-200 rounded-full" />
+              <div>
+                <span className="text-sm block font-medium text-gray-700">
+                  {answer.user.name}
+                </span>
+                <span className="text-xs text-gray-500 block ">
+                  {answer.createdAt.toDateString()}
+                </span>
+                <p className="text-gray-700 mt-2">{answer.answer}</p>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
         <div className="px-4">
           <textarea
