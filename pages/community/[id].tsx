@@ -1,7 +1,6 @@
 import TextArea from "@components/textarea";
 import useMutation from "@libs/client/useMutation";
 import { cls } from "@libs/client/utils";
-import withHandler from "@libs/server/withHandler";
 import { Answer, Post, User } from "@prisma/client";
 import type { NextPage } from "next";
 import Link from "next/link";
@@ -80,8 +79,9 @@ const CommunityPostDetail: NextPage = () => {
   useEffect(() => {
     if (answerData && answerData.ok) {
       reset();
+      mutate();
     }
-  }, [answerData, reset]);
+  }, [answerData, reset, mutate]);
 
   return (
     <Layout canGoBack>
@@ -151,7 +151,7 @@ const CommunityPostDetail: NextPage = () => {
           </div>
         </div>
         <div className="px-4 my-5 space-y-5">
-          {data?.post?.answers.map((answer) => (
+          {data?.post?.answers?.map((answer) => (
             <div key={answer.id} className="flex items-start space-x-3">
               <div className="w-8 h-8 bg-slate-200 rounded-full" />
               <div>
@@ -161,7 +161,7 @@ const CommunityPostDetail: NextPage = () => {
                 <span className="text-xs text-gray-500 block ">
                   {/* {answer.createdAt.toDateString()} */}
                 </span>
-                <p className="text-gray-700 mt-2">{answer.answer}</p>
+                <p className="text-gray-700 mt-2">{answer.answer} </p>
               </div>
             </div>
           ))}
